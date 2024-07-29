@@ -1,4 +1,6 @@
+# ./ui.py
 import flet as ft
+
 
 class UI:
     def __init__(self, page: ft.Page):
@@ -23,15 +25,18 @@ class UI:
             on_click=lambda _: self.dir_picker.get_directory_path()
         )
 
+        self.show_chat_button = ft.ElevatedButton("Show/Hide Chat")
+
         self.page.add(
             ft.Column([
-                ft.Text("Project Embeddings Generator and AI Assistant", size=24, weight=ft.FontWeight.BOLD),
+                ft.Text("ChromoSage Directory Assistant", size=24, weight=ft.FontWeight.BOLD),
                 self.pick_dir_button,
                 self.project_path,
                 self.output_text,
                 self.query_input,
                 self.query_button,
-                self.query_result
+                self.query_result,
+                self.show_chat_button  # Add this button to your UI
             ])
         )
 
@@ -48,3 +53,44 @@ class UI:
     def query_embeddings(self, e):
         # overridden by the Controller
         pass
+
+
+class ChatWindow(ft.AlertDialog):
+    def __init__(self, on_dismiss):
+        super().__init__(
+            modal=True,
+            title=ft.Text("Chat Window"),
+            on_dismiss=on_dismiss
+        )
+
+        self.content = ft.Column(
+            width=500,
+            height=400,
+            scroll=ft.ScrollMode.AUTO
+        )
+
+        self.input_text = ft.TextField(hint_text="Type your message...", multiline=True)
+        self.send_button = ft.ElevatedButton("Send", on_click=self.on_send)
+        self.conversation_history = []
+
+        self.content.controls.extend(
+            [
+                *self.conversation_history,
+                ft.Divider(),
+                self.input_text,
+                ft.Row([self.send_button]),
+            ]
+        )
+
+    def on_send(self, e):
+        message = self.input_text.value
+        if not message:
+            return
+
+        # Handle sending the message (you can implement this logic here)
+        print(f"Received message: {message}")
+
+        # Clear the input field and add the sent message to the conversation history
+        self.input_text.value = ""
+        self.conversation_history.append(ft.Text(message))
+        self.update()

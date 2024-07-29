@@ -163,3 +163,4 @@ cython_debug/
 
 # custom 
 *_embeddings*
+*.DS*

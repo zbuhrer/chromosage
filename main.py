@@ -1,6 +1,8 @@
+# ./main.py
 import flet as ft
 from ui import UI
 from controller import Controller
+
 
 def main(page: ft.Page):
     ui = UI(page)

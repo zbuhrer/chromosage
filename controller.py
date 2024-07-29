@@ -1,14 +1,19 @@
+# ./controller.py
 import os
 import json
-from ui import UI
+import flet as ft
+from ui import UI, ChatWindow
 from file_processor import process_directory, save_embeddings
 from chat_model import get_chat_response
 from embedding_model import get_embedding, cosine_similarity
+
 
 class Controller:
     def __init__(self, ui: UI):
         self.ui = ui
         self.ui.query_button.on_click = self.query_embeddings
+        self.chat_controller = ChatController(self.ui.page)
+        self.ui.show_chat_button.on_click = self.chat_controller.show_chat
 
     def process_project(self):
         if not self.ui.project_path.value:
@@ -73,3 +78,30 @@ class Controller:
         self.ui.query_result.value = f"AI Assistant's response:\n\n{ai_response}"
         self.ui.query_result.visible = True
         self.ui.page.update()
+
+
+class ChatController:
+    def __init__(self, page: ft.Page):
+        self.page = page
+        self.chat_window = None
+
+    def toggle_chat(self, page: ft.Page):
+        if not self.chat_window:
+            self.chat_window = ChatWindow(on_dismiss=self.hide_chat)
+            self.page.dialog = self.chat_window
+            self.page.update()
+        
+        if self.chat_window.open:
+            self.hide_chat()
+        else:
+            self.show_chat()
+
+    def show_chat(self):
+        if self.chat_window:
+            self.chat_window.open = True
+            self.page.update()
+
+    def hide_chat(self):
+        if self.chat_window:
+            self.chat_window.open = False
+            self.page.update()
