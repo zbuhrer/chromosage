@@ -36,7 +36,7 @@ class UI:
                 self.query_input,
                 self.query_button,
                 self.query_result,
-                self.show_chat_button  # Add this button to your UI
+                self.show_chat_button 
             ])
         )
 

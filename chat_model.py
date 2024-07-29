@@ -1,12 +1,15 @@
 # ./chat_model.py
 from openai import OpenAI
-import time
 
 
 client = OpenAI(base_url="http://localhost:1234/v1", api_key="lm-studio")
 
-def get_chat_response(chat_history, model="lmstudio-community/Meta-Llama-3.1-8B-Instruct-GGUF", temperature=0.7, max_tokens=1000, timeout=30):
-    start_time = time.time()
+def get_chat_response(
+        chat_history, 
+        model="lmstudio-community/Meta-Llama-3.1-8B-Instruct-GGUF", 
+        temperature=0.7, 
+        max_tokens=1000,
+        ):
     
     try:
         response = client.chat.completions.create(
@@ -14,12 +17,7 @@ def get_chat_response(chat_history, model="lmstudio-community/Meta-Llama-3.1-8B-
             messages=chat_history,
             temperature=temperature,
             max_tokens=max_tokens,
-            timeout=timeout
         )
-        
-        # Check for timeout
-        if time.time() - start_time > timeout:
-            return "Response took too long. Please try again."
         
         return response.choices[0].message.content
     
